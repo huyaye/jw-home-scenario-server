@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Job Scheduler</title>
+<link href="/static/favicon.ico" type="image/x-icon" rel="shortcut icon">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<style type="text/css">
+	.btnRun, .btnPause, .btnResume, .btnEdit {margin-right: 8px;}
+	.input-group {margin-bottom: 5px;}
+	.title {text-align:center; font-size:30px; margin-top:15px;}
+	.btnCreate {text-align:right; margin:5px 15px;}
+	.head {border:solid; border-color:#8080805c; border-width:1px;}
+	.line {
+	    border: 0;
+	    height: 1px;
+	    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.23), rgba(0, 0, 0, 0));
+	}
+</style>
+</head>
+<body style="background-color:rgb(225, 245, 192);">
+	<div class="container-fluid" style="padding-top: 15px;">
+	    <div class="head">
+	    	<div class="title">JOB MANAGEMENT CONSOLE</div>
+	    	<hr class="line">
+		</div>
+		<table class="table table-bordered">
+			<thead>
+				<tr class="active">
+					<th>NAME</th>
+					<th>DESCRIPTION</th>
+					<th>START_TIME</th>
+					<th>PREV_FIRE_TIME</th>
+					<th>NEXT_FIRE_TIME</th>
+					<th>TIMEZONE</th>
+					<th>STATE</th>
+					<th>CRON</th>
+				</tr>
+			</thead>
+			<tbody  th:each="item : ${jobs}">
+				<tr th:attr="data-id=${item.jobName}">
+					<td th:text="${item.jobName}"></td>
+					<td th:text="${item.description}"></td>
+					<td th:text="${item.scheduledTime}"></td>
+					<td th:text="${item.lastFiredTime}"></td>
+					<td th:text="${item.nextFireTime}"></td>
+					<td th:text="${item.timezone}"></td>
+					<td th:text="${item.state}"></td>
+					<td th:text="${item.cronExpression}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

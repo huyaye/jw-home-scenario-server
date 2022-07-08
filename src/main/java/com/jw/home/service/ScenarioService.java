@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -43,5 +44,17 @@ public class ScenarioService {
         scenarioRepository.findById(scenarioId).ifPresent(scenario -> {
             // TODO
         });
+    }
+
+    public void deleteScenarios(List<String> scenarioIds) {
+        List<String> deletedScenarioIds = new ArrayList<>();
+        for (String scenarioId : scenarioIds) {
+            quartzService.deleteSchedule(scenarioId);
+        }
+        scenarioRepository.deleteAllById(scenarioIds);
+    }
+
+    public Iterable<Scenario> getScenarios(List<String> scenarioIds) {
+        return scenarioRepository.findAllById(scenarioIds);
     }
 }

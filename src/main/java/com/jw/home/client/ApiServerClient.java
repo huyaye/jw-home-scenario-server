@@ -13,6 +13,6 @@ public interface ApiServerClient {
     @GetMapping("/api/v1/admin/check/home")
     ResponseDto<Map<String, String>> checkHomeAuthority(@RequestParam(name = "userId") String userId,
                                                         @RequestParam(name = "homeId") String homeId,
-                                                        @RequestParam(name = "deviceIds") String deviceIds);
+                                                        @RequestParam(name = "deviceIds", required = false) String deviceIds);
 
 }

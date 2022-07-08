@@ -2,6 +2,7 @@ package com.jw.home.quartz.service;
 
 import com.jw.home.common.spec.ConditionDay;
 import com.jw.home.domain.ScenarioCondition;
+import com.jw.home.exception.QuartzException;
 import com.jw.home.quartz.dto.QuartzJobInfoDto;
 import com.jw.home.quartz.job.ScenarioActionJob;
 import com.jw.home.quartz.util.DateTimeUtils;
@@ -26,6 +27,7 @@ public class QuartzService {
     private final Scheduler scheduler;
 
     public void addSchedule(String id, String description, ScenarioCondition condition, String timezone) throws ClassNotFoundException, SchedulerException, ParseException {
+        @SuppressWarnings("unchecked")
         JobDetail jobDetail = JobBuilder
                 .newJob((Class<? extends QuartzJobBean>) Class.forName(ScenarioActionJob.class.getName()))
                 .withIdentity(id, "scenario")
@@ -35,11 +37,21 @@ public class QuartzService {
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
+    public void deleteSchedule(String scenarioId) {
+        try {
+            scheduler.deleteJob(new JobKey(scenarioId, "scenario"));
+        } catch (SchedulerException e) {
+            log.error("Failed to delete quartz job", e);
+            throw QuartzException.INSTANCE;
+        }
+    }
+
     public List<QuartzJobInfoDto> getAllScheduledJob() {
         List<QuartzJobInfoDto> jobs = new ArrayList<>();
         try {
             for (String groupName : scheduler.getJobGroupNames()) {
                 for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    @SuppressWarnings("unchecked")
                     List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
                     if (triggers.size() == 0) {
                         continue;

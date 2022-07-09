@@ -2,6 +2,7 @@ package com.jw.home.domain.mapper;
 
 import com.jw.home.domain.Scenario;
 import com.jw.home.rest.dto.AddScenarioReq;
+import com.jw.home.rest.dto.GetScenarioRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -11,4 +12,6 @@ public interface ScenarioMapper {
     ScenarioMapper INSTANCE = Mappers.getMapper(ScenarioMapper.class);
 
     Scenario toScenario(AddScenarioReq dto);
+
+    GetScenarioRes.GetScenarioDto toGetScenarioRes(Scenario scenario);
 }

@@ -66,6 +66,21 @@ public class ScenarioRestController {
         return new ResponseEntity<>(new ResponseDto<>(null, null, new DeleteScenarioRes(targetScenarioIds)), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<ResponseDto<GetScenarioRes>> getScenario(@RequestParam("homeId") String homeId) {
+        String userId = AuthInfoManager.getRequestMemId();
+        log.info("getScenario : {}, {}", userId, homeId);
+
+        apiServerClient.checkHomeAuthority(userId, homeId, null);
+
+        GetScenarioRes response = new GetScenarioRes();
+        Iterable<Scenario> scenarios = scenarioService.getScenariosOfHome(homeId);
+        scenarios.forEach(scenario -> response.add(ScenarioMapper.INSTANCE.toGetScenarioRes(scenario)));
+
+        log.info("Succeed to get scenario");
+        return new ResponseEntity<>(new ResponseDto<>(null, null, response), HttpStatus.OK);
+    }
+
     @ExceptionHandler
     public ResponseEntity<ResponseDto<Object>> handleException(Exception exception) {
         if (exception instanceof CustomBusinessException) {

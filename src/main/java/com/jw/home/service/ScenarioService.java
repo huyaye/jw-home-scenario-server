@@ -57,4 +57,8 @@ public class ScenarioService {
     public Iterable<Scenario> getScenarios(List<String> scenarioIds) {
         return scenarioRepository.findAllById(scenarioIds);
     }
+
+    public Iterable<Scenario> getScenariosOfHome(String homeId) {
+        return scenarioRepository.findByHomeId(homeId);
+    }
 }

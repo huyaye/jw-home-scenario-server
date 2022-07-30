@@ -1,6 +1,8 @@
 server:
   port: 9094
 spring:
+  application:
+    name: scenario-server
   data:
     mongodb:
       uri: mongodb://user:pass@url:27017/jw-home?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false
@@ -35,6 +37,9 @@ spring:
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
             useProperties: true
             misfireThreshold: 60000
-client:
-  api-server:
-    url: http://localhost:9092
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka

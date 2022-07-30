@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(name = "api-server", url = "${client.api-server.url}", configuration = ApiServerClientErrorDecoder.class)
+@FeignClient(name = "api-server", configuration = ApiServerClientErrorDecoder.class)
 public interface ApiServerClient {
     @GetMapping("/api/v1/admin/check/home")
     ResponseDto<Map<String, String>> checkHomeAuthority(@RequestParam(name = "userId") String userId,

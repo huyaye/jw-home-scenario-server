@@ -17,16 +17,13 @@
 package com.jw.home.rest.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Arrays;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 
 @EnableWebSecurity
 public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -44,22 +41,15 @@ public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.antMatchers("/css/**").permitAll()
 					.anyRequest().authenticated()
 			)
-			.oauth2ResourceServer(oauth -> {
-				oauth.jwt();
-				DefaultBearerTokenResolver tokenResolver = new DefaultBearerTokenResolver();
-				tokenResolver.setAllowFormEncodedBodyParameter(true);
-				tokenResolver.setAllowUriQueryParameter(true);
-				oauth.bearerTokenResolver(tokenResolver);
-			});
+			.oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(CustomSecurityConfiguration.this.grantedAuthoritiesExtractor())));
 		// @formatter:on
 	}
 
 	@Bean
-	JwtDecoder jwtDecoder() {
-		byte[] key = "jwt_test_sign_key".getBytes();
-		byte[] paddedKey = key.length < 32 ? Arrays.copyOf(key, 32) : key;
-
-		SecretKey signKey = new SecretKeySpec(paddedKey, "HS256");
-		return NimbusJwtDecoder.withSecretKey(signKey).build();
+	Converter<Jwt, ? extends AbstractAuthenticationToken> grantedAuthoritiesExtractor() {
+		JwtAuthenticationConverter jwtAuthenticationConverter =
+				new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
+		return jwtAuthenticationConverter;
 	}
 }

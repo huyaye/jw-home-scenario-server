@@ -9,7 +9,7 @@ spring:
       authentication-database: admin
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/quartz?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/quartz?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
     username: ${MYSQL_USER:admin}
     password: ${MYSQL_PASS:pass}
     hikari:
@@ -37,6 +37,12 @@ spring:
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
             useProperties: true
             misfireThreshold: 60000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9091/auth/realms/jw-home}
+          jwk-set-uri: ${JWT_SET_URI:http://localhost:9091/auth/realms/jw-home/protocol/openid-connect/certs}
 eureka:
   instance:
     prefer-ip-address: true
